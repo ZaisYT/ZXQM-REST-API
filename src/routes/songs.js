@@ -37,14 +37,12 @@ router.put('/:id', (req, res) => {
     const { songName, songArtists, songURL, iconURL, lyricsURI } = req.body;
     if (songName && songArtists && songURL && iconURL && lyricsURI){
         _.each(songs, (song, i) => {
-            if (song.id == id){
-                song.name = name;
-                song.pfp = pfp;
-                song.isPartner = isPartner;
-                song.bannerURL = bannerURL;
-                song.ownedSongs = ownedSongs;
-                song.playlists = playlists;
-                song.featuredSongs = featuredSongs;
+            if (song.song == id){
+                song.songName = songName;
+                song.songArtists = songArtists;
+                song.songURL = songURL;
+                song.iconURL = iconURL;
+                song.lyricsURI = lyricsURI;
             }
         });
         res.json(songs);
