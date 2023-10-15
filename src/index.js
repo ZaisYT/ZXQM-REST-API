@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const morgan = require('morgan');
 
@@ -7,6 +8,7 @@ app.set('port', process.env.PORT || 3000);
 
 // middlewares
 app.use(morgan('dev'));
+app.use(cors({ origin: ["localhost:3000","localhost:5173"] }));
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 
