@@ -158,5 +158,13 @@
         "songURL": "https://github.com/ZaisYT/ZXQM-FILES/blob/main/audios/BorroCassette.mp3?raw=true",
         "iconURL": "https://i.scdn.co/image/ab67616d00001e023c3acd23605ccd1a9fd038bd",
         "lyricsURL": null
+    },
+    {
+        "id": 20,
+        "songName": "Error",
+        "songArtists": ["4x3"],
+        "songURL": "https://github.com/ZaisYT/ZXQM-FILES/blob/main/audios/audio.mp3?raw=true",
+        "iconURL": "https://i.scdn.co/image/ab67616d00001e023c3acd23605ccd1a9fd038bd",
+        "lyricsURL": null
     }
 ]
