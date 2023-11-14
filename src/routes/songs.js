@@ -1,31 +1,44 @@
 const { Router } = require('express');
 const _ = require('underscore');
+const fs = require('fs');
 
 const router = Router();
 
-const songs = require('../songs.json');
+let songsPath = './src/songs.json'; 
 
 router.get('/', (req, res) => {
-    res.json(songs);
+    const songs = fs.readFileSync(songsPath, 'utf-8');
+    const objetoJson = JSON.parse(songs.replace(/[\r\n]/g, ''));
+
+    res.json(objetoJson);
 });
 
 router.post('/', (req, res) => {
+    const songs = fs.readFileSync(songsPath, 'utf-8');
+    const objetoJson = JSON.parse(songs.replace(/[\r\n]/g, ''));
+
     const { songName, songArtists, songURL, iconURL, lyricsURI } = req.body;
     if (songName && songArtists && songURL && iconURL && lyricsURI){
-        const id = songs.length;
+        const id = objetoJson.length;
         const newSongs = {id, ...req.body};
-        songs.push(newSongs);
-        res.json(songs);
+        objetoJson.push(newSongs);
+        res.json(objetoJson);
     } else {
         res.status(500).json({error:'Wrong Request!'});
     }
+
+    const newContent = JSON.stringify(objetoJson, null, 4);
+    fs.writeFileSync(songsPath, newContent, 'utf8');
 });
 
 router.get('/:id', (req, res) => {
+    const songs = fs.readFileSync(songsPath, 'utf-8');
+    const objetoJson = JSON.parse(songs.replace(/[\r\n]/g, ''));
+
     const { id } = req.params
-    _.each(songs, (song, i) => {
+    _.each(objetoJson, (song, i) => {
         if (song.id == id){
-            res.send(songs[id]);
+            res.send(objetoJson[id]);
             return;
         }
     });
@@ -33,10 +46,13 @@ router.get('/:id', (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
+    const songs = fs.readFileSync(songsPath, 'utf-8');
+    const objetoJson = JSON.parse(songs.replace(/[\r\n]/g, ''));
+
     const { id } = req.params
     const { songName, songArtists, songURL, iconURL, lyricsURI } = req.body;
-    if (songName && songArtists && songURL && iconURL && lyricsURI){
-        _.each(songs, (song, i) => {
+    if (songName && songArtists && songURL && iconURL){
+        _.each(objetoJson, (song, i) => {
             if (song.song == id){
                 song.songName = songName;
                 song.songArtists = songArtists;
@@ -45,20 +61,29 @@ router.put('/:id', (req, res) => {
                 song.lyricsURI = lyricsURI;
             }
         });
-        res.json(songs);
+        res.json(objetoJson);
     } else {
         res.status(500).json({error:'Wrong Request!'});
     }
+
+    const newContent = JSON.stringify(objetoJson, null, 4);
+    fs.writeFileSync(songsPath, newContent, 'utf8');
 });
 
 router.delete('/:id', (req, res) => {
+    const songs = fs.readFileSync(songsPath, 'utf-8');
+    const objetoJson = JSON.parse(songs.replace(/[\r\n]/g, ''));
+
     const { id } = req.params
-    _.each(songs, (song, i) => {
+    _.each(objetoJson, (song, i) => {
         if (song.id == id){
-            songs.splice(i, 1);
+            objetoJson.splice(i, 1);
         }
     });
-    res.send(songs);
+    res.send(objetoJson);
+
+    const newContent = JSON.stringify(objetoJson, null, 4);
+    fs.writeFileSync(songsPath, newContent, 'utf8');
 });
 
 module.exports = router;
