@@ -1,31 +1,44 @@
 const { Router } = require('express');
 const _ = require('underscore');
+const fs = require('fs');
 
 const router = Router();
 
-const artists = require('../artists.json');
+let artistPath = './src/artists.json'; 
 
 router.get('/', (req, res) => {
-    res.json(artists);
+    const art = fs.readFileSync(songsPath, 'utf-8');
+    const objetoJson = JSON.parse(art.replace(/[\r\n]/g, ''));
+
+    res.json(objetoJson);
 });
 
 router.post('/', (req, res) => {
+    const art = fs.readFileSync(songsPath, 'utf-8');
+    const objetoJson = JSON.parse(art.replace(/[\r\n]/g, ''));
+
     const { name, pfp, isPartner, bannerURL, ownedSongs, playlists, featuredSongs } = req.body;
     if (name && pfp && isPartner && bannerURL && ownedSongs && playlists && featuredSongs){
-        const id = artists.length;
+        const id = objetoJson.length;
         const newArtists = {id, ...req.body};
-        artists.push(newArtists);
-        res.json(artists);
+        objetoJson.push(newArtists);
+        res.json(objetoJson);
     } else {
         res.status(500).json({error:'Wrong Request!'});
     }
+
+    const newContent = JSON.stringify(objetoJson, null, 4);
+    fs.writeFileSync(artistPath, newContent, 'utf8');
 });
 
 router.get('/:id', (req, res) => {
+    const art = fs.readFileSync(songsPath, 'utf-8');
+    const objetoJson = JSON.parse(art.replace(/[\r\n]/g, ''));
+
     const { id } = req.params
-    _.each(artists, (artist, i) => {
+    _.each(objetoJson, (artist, i) => {
         if (artist.id == id){
-            res.send(artists[id]);
+            res.send(objetoJson[id]);
             return;
         }
     });
@@ -33,10 +46,13 @@ router.get('/:id', (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
+    const art = fs.readFileSync(songsPath, 'utf-8');
+    const objetoJson = JSON.parse(art.replace(/[\r\n]/g, ''));
+
     const { id } = req.params
     const { name, pfp, isPartner, bannerURL, ownedSongs, playlists, featuredSongs } = req.body;
     if (name && pfp && isPartner && bannerURL && ownedSongs && playlists && featuredSongs){
-        _.each(artists, (artist, i) => {
+        _.each(objetoJson, (artist, i) => {
             if (artist.id == id){
                 artist.name = name;
                 artist.pfp = pfp;
@@ -47,20 +63,29 @@ router.put('/:id', (req, res) => {
                 artist.featuredSongs = featuredSongs;
             }
         });
-        res.json(artists);
+        res.json(objetoJson);
     } else {
         res.status(500).json({error:'Wrong Request!'});
     }
+
+    const newContent = JSON.stringify(objetoJson, null, 4);
+    fs.writeFileSync(artistPath, newContent, 'utf8');
 });
 
 router.delete('/:id', (req, res) => {
+    const art = fs.readFileSync(songsPath, 'utf-8');
+    const objetoJson = JSON.parse(art.replace(/[\r\n]/g, ''));
+
     const { id } = req.params
-    _.each(artists, (artist, i) => {
+    _.each(objetoJson, (artist, i) => {
         if (artist.id == id){
-            artists.splice(i, 1);
+            objetoJson.splice(i, 1);
         }
     });
-    res.send(artists);
+    res.send(objetoJson);
+
+    const newContent = JSON.stringify(objetoJson, null, 4);
+    fs.writeFileSync(artistPath, newContent, 'utf8');
 });
 
 module.exports = router;
