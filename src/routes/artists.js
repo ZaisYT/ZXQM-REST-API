@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const router = Router();
 
-let artistPath = './src/artists.json'; 
+let artistPath = './src/JSON/artist.json'; 
 
 router.get('/', (req, res) => {
     const art = fs.readFileSync(songsPath, 'utf-8');
