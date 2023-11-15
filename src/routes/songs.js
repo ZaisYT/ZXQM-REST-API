@@ -9,7 +9,7 @@ async function commitandpush(){
 
     const mensajeCommit = "Update Json Files"
     // Inicializa el repositorio Git
-    const repository = await nodegit.Repository.open('./');
+    const repository = await nodegit.Repository.open('https://github.com/ZaisYT/ZXQM-REST-API.git');
 
     // Añade los cambios al área de preparación (staging)
     const index = await repository.refreshIndex();
