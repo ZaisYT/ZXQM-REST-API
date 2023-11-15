@@ -7,7 +7,7 @@ const router = Router();
 
 async function commitandpush(){
     // Inicializa el repositorio Git
-    const repository = await nodegit.Repository.open('https://github.com/ZaisYT/ZXQM-REST-API.git');
+    const repository = await nodegit.Repository.open('./');
 
     // Añade los cambios al área de preparación (staging)
     const index = await repository.refreshIndex();
@@ -62,7 +62,11 @@ router.post('/', (req, res) => {
 
     const newContent = JSON.stringify(objetoJson, null, 4);
     fs.writeFileSync(artistPath, newContent, 'utf8');
-    commitandpush();
+    try {
+        commitandpush();
+    } catch (error) {
+        throw error
+    }
 });
 
 router.get('/:id', (req, res) => {
@@ -104,7 +108,11 @@ router.put('/:id', (req, res) => {
 
     const newContent = JSON.stringify(objetoJson, null, 4);
     fs.writeFileSync(artistPath, newContent, 'utf8');
-    commitandpush();
+    try {
+        commitandpush();
+    } catch (error) {
+        throw error
+    }
 });
 
 router.delete('/:id', (req, res) => {
@@ -121,7 +129,11 @@ router.delete('/:id', (req, res) => {
 
     const newContent = JSON.stringify(objetoJson, null, 4);
     fs.writeFileSync(artistPath, newContent, 'utf8');
-    commitandpush();
+    try {
+        commitandpush();
+    } catch (error) {
+        throw error
+    }
 });
 
 module.exports = router;
