@@ -1,8 +1,41 @@
 const { Router } = require('express');
 const _ = require('underscore');
 const fs = require('fs');
+const nodegit = require('nodegit');
 
 const router = Router();
+
+async function commitandpush(){
+    // Inicializa el repositorio Git
+    const repository = await nodegit.Repository.open('https://github.com/ZaisYT/ZXQM-REST-API.git');
+
+    // Añade los cambios al área de preparación (staging)
+    const index = await repository.refreshIndex();
+    await index.addAll();
+    await index.write();
+    const oid = await index.writeTree();
+
+    // Obtiene el árbol del commit actual
+    const head = await nodegit.Reference.nameToId(repository, 'HEAD');
+    const parent = await repository.getCommit(head);
+
+    // Crea un objeto de firma para el commit
+    const firma = nodegit.Signature.now('Zais', 'xice1572@hotmail.com');
+
+    // Crea el objeto de commit
+    const commitId = await repository.createCommit('HEAD', firma, firma, mensajeCommit, oid, [parent]);
+
+    // console.log('Commit exitoso:', commitId.toString());
+
+    // Empuja los cambios al repositorio remoto en GitHub
+    const remote = await repository.getRemote('origin');
+    const credenciales = nodegit.Cred.userpassPlaintextNew('ZaisYT', 'Vicentito2008.'); // Reemplaza con tus credenciales
+    await remote.push(['refs/heads/main:refs/heads/main'], {
+      callbacks: {
+        credentials: () => credenciales
+      }
+    });
+}
 
 let songsPath = './src/JSON/songs.json'; 
 
@@ -29,6 +62,7 @@ router.post('/', (req, res) => {
 
     const newContent = JSON.stringify(objetoJson, null, 4);
     fs.writeFileSync(songsPath, newContent, 'utf8');
+    commitandpush();
 });
 
 router.get('/:id', (req, res) => {
@@ -68,6 +102,7 @@ router.put('/:id', (req, res) => {
 
     const newContent = JSON.stringify(objetoJson, null, 4);
     fs.writeFileSync(songsPath, newContent, 'utf8');
+    commitandpush();
 });
 
 router.delete('/:id', (req, res) => {
@@ -84,6 +119,7 @@ router.delete('/:id', (req, res) => {
 
     const newContent = JSON.stringify(objetoJson, null, 4);
     fs.writeFileSync(songsPath, newContent, 'utf8');
+    commitandpush();
 });
 
 module.exports = router;
